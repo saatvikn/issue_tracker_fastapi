@@ -57,7 +57,13 @@ These commands only need to be run once for a new local setup.
 
 ### Configure the connection
 
-Create `.env` in the project root:
+For a fresh setup, copy the example configuration to `.env` in the project root:
+
+```powershell
+Copy-Item -LiteralPath .env.example -Destination .env
+```
+
+Edit the copied file to configure your development database:
 
 ```ini
 DATABASE_URL=postgresql+psycopg://issue_tracker_user:YOUR_URL_ENCODED_PASSWORD@localhost:5432/issue_tracker
@@ -67,13 +73,19 @@ Replace `YOUR_URL_ENCODED_PASSWORD` with the application login's password, URL-e
 
 The URL specifies the database type (`postgresql`), Python driver (`psycopg`), login, password, server address, port, and database name. `app/database.py` loads `.env` and creates the SQLAlchemy Engine from this value. An existing `DATABASE_URL` environment variable takes precedence over `.env`.
 
-Create `.env.test` in the project root for automated tests:
+For automated tests, also copy the example to `.env.test`:
+
+```powershell
+Copy-Item -LiteralPath .env.example -Destination .env.test
+```
+
+Edit its password and change the database name to `issue_tracker_test`:
 
 ```ini
 DATABASE_URL=postgresql+psycopg://issue_tracker_user:YOUR_URL_ENCODED_PASSWORD@localhost:5432/issue_tracker_test
 ```
 
-Both files are ignored by Git. Keep actual passwords out of source files and commits.
+Both local configuration files are ignored by Git. `.env.example` contains placeholders and can be committed. Keep actual passwords out of source files and commits.
 
 ### Apply migrations and start the server
 
@@ -220,6 +232,7 @@ alembic/versions/             Versioned database migration scripts
 tests/conftest.py             Test configuration and database cleanup
 tests/test_issues.py          API behavior tests
 requirements.txt              Python dependencies
+.env.example                  Example database configuration with placeholders
 ```
 
 The app currently allows requests from any CORS origin and does not implement authentication.
